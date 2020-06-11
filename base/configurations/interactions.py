@@ -36,81 +36,7 @@ class InformationAboutElement:
         self.logger = session.logger
         self.initialize_webelement = Element.initialize_webelement
 
-    def is_elements_present(self, element, timeout=5, index=None, raise_excepton=False):
-        """Check if element is present.
-        :param element :  - or locator of element that is of tuple type :
-                      e.g. ("CSS_SELECTOR", ".locator");
-                      e.g. ("XPATH", "//*[@class ='class']"
-                      -   or instance of class Element :
-                      e.g. Element(self.session, ("CSS_SELECTOR", ".locator"))
-        :param index: (int): if present - returns element by index, from list of elements,
-                         found by specified locator.
-        :param timeout (int) time to wait for element is displayed
-        :raise FlowFailedException if element not present and raise_excepton = True
-        """
-        is_present = None
-        el_description = ''
-        if isinstance(element, Element):
-            is_present = len(element(multiple=True, implicitly_timeout=timeout, index=index)) > 0
-            el_description = str(element.locator)
-        elif isinstance(element, tuple):
-            is_present = len(Element(self.driver, element)(multiple=True, implicitly_timeout=timeout, index=index)) > 0
-            el_description = str(element)
-        else:
-            raise FlowFailedException('Wrong instance of element passed to the method. Please check')
 
-        self.logger.info("Start checking if element present {}".format(el_description))
-        if raise_excepton and not is_present:
-            raise FlowFailedException('Following element "{}" is not present in DOM. Waited for {} seconds'
-                                      .format(el_description, str(timeout)))
-
-        return is_present
-
-    def is_element_displayed(self, element, description=None, raise_excepton=False):
-        """return element is_displayed status by selenium operator.
-        :param element : watch in description to this module
-        :param description: watch in description to this module
-
-        :raise ElementNotFoundExcepiton if element not present or not displayed and raise_excepton = True
-        """
-        try:
-            web_element, description = self.initialize_webelement(element, description)
-            self.logger.info("Start checking if element '{}' is displayed".format(description))
-            if web_element.is_displayed():
-                return True
-            else:
-                if raise_excepton:
-                    raise ElementNotAvailableException("Following element : '{}' is not displayed.".format(description))
-                return False
-
-        except ElementNotFoundExcepiton:
-            if raise_excepton:
-                raise ElementNotFoundExcepiton("Following element : '{}' is not present in DOM.".format(description))
-            return False
-
-    def is_element_selected(self, element, description=None):
-        """return element is_checked status by selenium operator.
-        :param element : watch in description to this module
-        :param description: watch in description to this module
-        """
-        web_element, el_description = self.initialize_webelement(element, description)
-        self.logger.info("Start checking if element '{}' is selected".format(el_description))
-        try:
-            return web_element.is_selected()
-        except Exception as exception:
-            raise CustomException("Failed to get selected/unselected status of following element : '{}' "
-                                  "due to following exception: '{}'".format(el_description, str(exception)))
-
-
-    def is_element_selected_js(self, css_selector_of_element):
-        """return element is_checked status by JS operator"""
-        try:
-            self.logger.info("Start checking if element '{}' is selected".format(css_selector_of_element))
-            return self.driver.execute_script("return document.querySelector("
-                                              "argument[0]).checked", css_selector_of_element)
-        except JavascriptException:
-            raise JavascriptException("Failed to check if element by locator '{}' is selected"
-                                      .format(css_selector_of_element))
 
 
 class Getters(InformationAboutElement):
@@ -847,6 +773,81 @@ class BrowserNative(EventHandlers):
         alert.accept()
 
 
-class Interactions(BrowserNative):
-    """ Abstract class, created for linking with other interaction classes, it is inherited from.
+class Interactions:
+    """ Class that describes interaction with elements.
     """
+
+    def __init__(self, session):
+        self.driver = session.driver
+        self.waits = Waits(session)
+        self.logger = session.logger
+        self.initialize_webelement = Element.initialize_webelement
+
+    # Get info about element
+
+    def is_elements_present(self, element, timeout=5):
+        """Check if element is present.
+        :param element :  - or locator of element that is of tuple type :
+                      e.g. ("CSS_SELECTOR", ".locator");
+                      e.g. ("XPATH", "//*[@class ='class']"
+                      -   or instance of class Element :
+                      e.g. Element(self.session, ("CSS_SELECTOR", ".locator"))
+        :param el_description (str) description of the element
+        :param timeout (int) time to wait for element is displayed
+        """
+        try:
+            self.logger.info("Start checking if element present {}".format(el_description))
+            self.initialize_webelement(element,  timeout=timeout)
+            self.logger.info('Found following element: {}'.format(element))
+            return True
+        except ElementNotFoundExcepiton:
+            self.logger.info('Element by locator "{}" not found. Waited for  "{}"'.format(element, timeout))
+            return False
+
+
+    def is_element_displayed(self, element, description=None, raise_excepton=False):
+        """return element is_displayed status by selenium operator.
+        :param element : watch in description to this module
+        :param description: watch in description to this module
+
+        :raise ElementNotFoundExcepiton if element not present or not displayed and raise_excepton = True
+        """
+        try:
+            web_element, description = self.initialize_webelement(element, description)
+            self.logger.info("Start checking if element '{}' is displayed".format(description))
+            if web_element.is_displayed():
+                return True
+            else:
+                if raise_excepton:
+                    raise ElementNotAvailableException("Following element : '{}' is not displayed.".format(description))
+                return False
+
+        except ElementNotFoundExcepiton:
+            if raise_excepton:
+                raise ElementNotFoundExcepiton("Following element : '{}' is not present in DOM.".format(description))
+            return False
+
+    def is_element_selected(self, element, description=None):
+        """return element is_checked status by selenium operator.
+        :param element : watch in description to this module
+        :param description: watch in description to this module
+        """
+        web_element, el_description = self.initialize_webelement(element, description)
+        self.logger.info("Start checking if element '{}' is selected".format(el_description))
+        try:
+            return web_element.is_selected()
+        except Exception as exception:
+            raise CustomException("Failed to get selected/unselected status of following element : '{}' "
+                                  "due to following exception: '{}'".format(el_description, str(exception)))
+
+    def is_element_selected_js(self, css_selector_of_element):
+        """return element is_checked status by JS operator"""
+        try:
+            self.logger.info("Start checking if element '{}' is selected".format(css_selector_of_element))
+            return self.driver.execute_script("return document.querySelector("
+                                              "argument[0]).checked", css_selector_of_element)
+        except JavascriptException:
+            raise JavascriptException("Failed to check if element by locator '{}' is selected"
+                                      .format(css_selector_of_element))
+
+
