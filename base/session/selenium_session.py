@@ -1,31 +1,32 @@
-"""SELENIUM SESSION MODULE"""
-
+import configparser
+import os
 from base.driver.driver import Driver
+path_to_default_config = (os.path.dirname(os.path.realpath(__file__)) + "/../configs/default_config.ini")
+DEFAULT_CONFIG = configparser.ConfigParser()
+DEFAULT_CONFIG.read(path_to_default_config)
 
 
 class SeleniumSession:
-    """Defining selenium session"""
-    ip = None
-    profile = None
-    binary = None
 
-    def __init__(self, config, logger, browser="chrome"):
+    def __init__(self, logger, browser='chrome', url=None, credentials=None):
         """
-        Start selenium session:
-        :param args:
-        :param browser: type browser
-        :param local: open local browser
-        :param local_zalenium: if local_zalenium flag True: Open zalenium in local docker
-        :param logger:
-        :param kwargs:
+        Setting attributes for selenium session:
         """
+        logger.info("Initializing selenium session...")
         self.logger = logger
-        self.driver = Driver(browser, logger).driver
-        self.session_id = self.driver.session_id
-        self.credentials = (config.get("ISE", "USERNAME"),
-                            config.get("ISE", "PASSWORD"))
 
-    # @staticmethod
-    # def get_value_from_config_object(key, config_object=DEFAULT_CONFIG):
-    #     """get config object"""
-    #     return config_object[key]
+        # open browser
+        self.driver = Driver(browser, self.logger).driver
+
+        # set credentials
+        if not credentials:
+            self.credentials = (DEFAULT_CONFIG.get("TEST CONFIG", "USERNAME"),
+                                DEFAULT_CONFIG.get("TEST CONFIG", "PASSWORD"))
+        else:
+            self.credentials = credentials
+
+        # set URL
+        if not url:
+            self.url = DEFAULT_CONFIG.get("TEST CONFIG", "URL")
+        else:
+            self.url = url

@@ -13,15 +13,15 @@ class PageNotLoadedException(CustomException):
     """Raises in case if page is not loaded"""
     pass
 
-class LoginPageNotLoadedException(PageNotLoadedException):
+class LoginPageNotLoadedException(CustomException):
     """Raises in case if login page is not loaded"""
     pass
 
-class HomePageNotLoadedException(PageNotLoadedException):
+class HomePageNotLoadedException(CustomException):
     """Raises in case if login page is not loaded"""
     pass
 
-class SiteIsDeadException(PageNotLoadedException):
+class SiteIsDeadException(CustomException):
     """Raises in case if login page is not loaded"""
     pass
 

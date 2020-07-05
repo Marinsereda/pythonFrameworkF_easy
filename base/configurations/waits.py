@@ -40,7 +40,6 @@ class Waits:
         self.session = session
         self.logger = session.logger
         self.driver = session.driver
-        self.initialize_webelement = Element.initialize_webelement
 
     def wait_for_web_element_visible(self, element, el_description='',
                                      timeout=TIMEOUT,  poll_frequency=POLL_FREQUENCY,
@@ -57,7 +56,7 @@ class Waits:
         and raise_exception is False.
         """
         try:
-            web_element, el_description = self.initialize_webelement(element, el_description, timeout=timeout)
+            web_element, el_description = Element(self.session).initialize_webelement(element, el_description, timeout=timeout)
             self.logger.info("Waiting for following element to be displayed : '%s'" % el_description)
             return WebDriverWait(self.driver, timeout, poll_frequency).until(ec.visibility_of(web_element))
         except ElementNotFoundExcepiton as element_not_found_e:
@@ -89,7 +88,7 @@ class Waits:
             bool: False if the WebElement not became invisible, or disappear from DOM, after specified time out.
         """
         try:
-            web_element, el_description = self.initialize_webelement(element, el_description, timeout=timeout)
+            web_element, el_description = Element(self.session).initialize_webelement(element, el_description, timeout=timeout)
             self.logger.info("Waiting for webelement {} to be no longer visible".format(el_description))
             return WebDriverWait(self.driver, timeout, poll_frequency).until(ec.invisibility_of_element_located(web_element))
         except TimeoutException:
@@ -116,7 +115,7 @@ class Waits:
             WebElement once it is clickable
             bool: False if WebElement is not clickable and raise_exception is False
         """
-        web_element, el_description = self.initialize_webelement(element, el_description)
+        web_element, el_description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Waiting for following element to be enabled : '%s'", el_description)
         try:
             return WebDriverWait(self.driver, timeout, poll_frequency).until(
@@ -143,7 +142,7 @@ class Waits:
             bool: True if the text present in the element's attribute
             bool: False if not present in the element's attribute and raise_exception is False
         """
-        web_element, el_description = self.initialize_webelement(element, el_description)
+        web_element, el_description = Element(self.session).initialize_webelement(element, el_description)
         poll_frequency = 0.5
         self.logger.info("Waiting for '{0}' string to be present in attribute '{1}' of element '{2}'"
                          .format(text, attribute, el_description))
@@ -176,7 +175,7 @@ class Waits:
         Raises:
             FlowFailedException: When condition is not met and raise_exception is True
         """
-        web_element, el_description = self.initialize_webelement(element, el_description)
+        web_element, el_description = Element(self.session).initialize_webelement(element, el_description)
         poll_frequency = 0.5
         self.logger.info("Waiting for '{0}' to be no longer present in attribute '{1}' of element '{2}'"
                          .format(text, attribute, el_description))
@@ -206,7 +205,7 @@ class Waits:
             bool: True if the text present in the element's inner text
             bool: False if not present and raise_exception is False
         """
-        web_element, el_description = self.initialize_webelement(element, el_description)
+        web_element, el_description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Waiting for text: {0} to be present in element: {1}".format(
             text, el_description))
         try:
@@ -238,7 +237,7 @@ class Waits:
         Raises:
             FlowFailedException: When condition is not met and raise_exception is True
         """
-        web_element, el_description = self.initialize_webelement(element, el_description)
+        web_element, el_description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Waiting for text: {0} to be no longer present in element: {1}".format(
             text, el_description))
         try:
@@ -265,7 +264,7 @@ class Waits:
             bool: True if condition met
             bool: False if condition not met and raise_exception is False
         """
-        web_elements, el_description = self.initialize_webelement(element, el_description, multiple=True)
+        web_elements, el_description = Element(self.session).initialize_webelement(element, el_description, multiple=True)
         self.logger.info("Waiting for number of present elements by locator '{}'  >= expected number : '{}'"
                          .format(el_description,  expected_number))
 

@@ -27,10 +27,10 @@ class Interactions:
     """
 
     def __init__(self, session):
+        self.session = session
         self.driver = session.driver
         self.waits = Waits(session)
         self.logger = session.logger
-        self.initialize_webelement = Element.initialize_webelement
 
     # Get info about element
 
@@ -46,7 +46,7 @@ class Interactions:
         """
         try:
             self.logger.info("Start checking if element present {}".format(element))
-            self.initialize_webelement(element,  timeout=timeout)
+            Element(self.session).initialize_webelement(element,  timeout=timeout)
             self.logger.info('Found following element: {}'.format(element))
             return True
         except ElementNotFoundExcepiton:
@@ -60,7 +60,7 @@ class Interactions:
         :param timeout (int) time to wait for element is displayed
         """
         try:
-            web_element, description = self.initialize_webelement(element, el_description, timeout=timeout)
+            web_element, description = Element(self.session).initialize_webelement(element, el_description, timeout=timeout)
             self.logger.info("Start checking if element '{}' is displayed".format(description))
             if web_element.is_displayed():
                 self.logger.info('Element by locator "{}" is displayed.'.format(description))
@@ -79,7 +79,7 @@ class Interactions:
         :param element : watch in description to this module
         :param el_description (str) description of the element
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Start checking if element '{}' is selected".format(description))
         try:
             return web_element.is_selected()
@@ -96,7 +96,7 @@ class Interactions:
         :param el_description (str) description of the element
 
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Getting text from element '{}'".format(description))
         self.waits.wait_for_web_element_visible(element)
         try:
@@ -110,7 +110,7 @@ class Interactions:
          :param element : watch in description to this module
         :param el_description (str) description of the element
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Getting attribute: '{}' from element '{}'".format(attribute, el_description))
         try:
             return web_element.get_attribute(attribute).lower()
@@ -125,7 +125,7 @@ class Interactions:
         :param element : watch in description to this module
         :param el_description (str) description of the element
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Scrolling in to view of Element '{}'".format(description))
         try:
             self.driver.execute_script("arguments[0].scrollIntoView(true);", web_element)
@@ -159,7 +159,7 @@ class Interactions:
        :param el_description (str) description of the element
        :param wait_to_be_enabled: (bool) if true - then wait for element to be enabled before entering keys.
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Clicking on following element '{}'".format(description))
 
         if wait_to_be_enabled:
@@ -182,7 +182,7 @@ class Interactions:
         Executes click action using
         Javascript
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Clicking on following element with JS : '{}'".format(description))
         try:
             self.driver.execute_script("return arguments[0].click()", web_element)
@@ -199,7 +199,7 @@ class Interactions:
             xoffset (int): offset from upper left to click on element
             yoffset (int): offset from upper left to click on element
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Hovering on following element '{}'".format(description))
         action_chains = ActionChains(self.driver)
         try:
@@ -214,8 +214,8 @@ class Interactions:
                       source_element_description='', dest_element_description=''):
         """ Click and hold source_element and move it to destination_element.
         """
-        source_webelement, source_webelement_des = self.initialize_webelement(source_element, source_element_description)
-        dest_webelement, dest_webelement_des = self.initialize_webelement(destination_element, dest_element_description)
+        source_webelement, source_webelement_des = Element(self.session).initialize_webelement(source_element, source_element_description)
+        dest_webelement, dest_webelement_des = Element(self.session).initialize_webelement(destination_element, dest_element_description)
         try:
             action_chains = ActionChains(self.driver)
             action_chains.click_and_hold(source_webelement).move_to_element(dest_webelement).release(dest_webelement).perform()
@@ -234,17 +234,17 @@ class Interactions:
         :param wait_to_be_enabled: (bool) if true - then wait for element to be enabled before entering keys.
         :param attempt (int) - not editable param.
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         if click:
             self.click(element, el_description)
         try:
             if clear:
                 self.logger.info("Clearing following element '{}'".format(el_description))
-                element.clear()
+                web_element.clear()
 
             if text_to_send:
                 self.logger.info("Sending keys: '{}' on to following element '{}'".format(text_to_send, description))
-                element.send_keys(text_to_send)
+                web_element.send_keys(text_to_send)
 
         except Exception as e:
 
@@ -283,7 +283,7 @@ class Interactions:
         :return:
         """
         if dropdown_to_expand:
-            dd_web_element, dd_description = self.initialize_webelement(dropdown_to_expand, el_description)
+            dd_web_element, dd_description = Element(self.session).initialize_webelement(dropdown_to_expand, el_description)
             self.logger.info("Clicking to open following dropdown '{}'".format(dd_description))
             self.click(dropdown_to_expand, el_description)
             time.sleep(3)
@@ -292,7 +292,7 @@ class Interactions:
             raise FlowFailedException("No options in dropdown list by locator '{}' found."
                                       .format(list_of_options_from_dropdown))
 
-        option_elements_list, option_list_description = self.initialize_webelement(list_of_options_from_dropdown,
+        option_elements_list, option_list_description = Element(self.session).initialize_webelement(list_of_options_from_dropdown,
                                                                                    multiple=True)
         self.logger.info(
             "Selecting option with following text '{}' by locator '{}'".format(text_to_select, option_list_description))
@@ -318,7 +318,7 @@ class Interactions:
     def is_checked(self, element, el_description=''):
         """return element is_checked status
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
         try:
             self.logger.info("Getting is selected status of following checkbox '{}'".format(description))
             return element.is_selected()
@@ -332,7 +332,7 @@ class Interactions:
                     if False - select checkbox (if it is not already selected);
 
         """
-        web_element, description = self.initialize_webelement(element, el_description)
+        web_element, description = Element(self.session).initialize_webelement(element, el_description)
 
         if (select and not self.is_checked(element)) or (not select and self.is_checked(element)):
             self.logger.info("{} following checkbox: {}".format('selecting' if select else 'deselecting', description))

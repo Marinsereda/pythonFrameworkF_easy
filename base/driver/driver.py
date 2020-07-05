@@ -1,11 +1,6 @@
 """Module that describes driver"""
 from selenium import webdriver
 from base.driver import driver_config
-# from base.configurations.logger import Logger
-
-# LOGGER = Logger.create_logger(__name__)
-# LOGGER = Logger(__name__).logger
-
 
 class Driver:
     """
@@ -33,6 +28,5 @@ class Driver:
                 desired_capabilities=driver_config.CONFIG[browser]['settings'])
 
         self.driver.maximize_window()
-        # self.session_id = self.driver.session_id
         self.logger.info("Selenium web driver was initialized")
-        # return self.driver
+
