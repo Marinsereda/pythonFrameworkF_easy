@@ -98,7 +98,6 @@ class Interactions:
         """
         web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Getting text from element '{}'".format(description))
-        self.waits.wait_for_web_element_visible(element)
         try:
             return web_element.text.strip()
         except Exception as exception:
@@ -162,8 +161,6 @@ class Interactions:
         web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Clicking on following element '{}'".format(description))
 
-        if wait_to_be_enabled:
-            self.waits.wait_for_element_to_be_enabled(element, el_description)
         try:
             self.logger.info("Clicking on following element '{}'".format(description))
             web_element.click()
