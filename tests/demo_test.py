@@ -1,17 +1,23 @@
-import time
-
 from base.configurations.base_test import BaseTest
-from base.pages.login_page.login_page import LoginPage
+from pages.login_page import LoginPage
+from pages.your_account.personal_account_page import PersonalAccountPage
 
 
 class TestDemo(BaseTest):
 
-    def test_some(self):
+    # def test_login_page(self):
+    #     self.init_session()
+    #     LoginPage(self.session).login_to_booking()
+    #     self.cleanup_session()
+
+
+    def test_personal_accunts_page(self):
         self.init_session()
-        LoginPage(self.session).login_to_booking()
+        page = PersonalAccountPage(session=self.session)
+        page.fill_email_confirm_input('someemail@ukr.net')
+        page.calendar.open_calendar(page.checkin_expander)
+        page.calendar.select_date('2020', '07', '02')
         self.cleanup_session()
-
-
 
     # @SessionDecorators.common_section()
     # def common_setup(self, *args):

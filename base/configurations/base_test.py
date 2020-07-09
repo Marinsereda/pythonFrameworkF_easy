@@ -5,8 +5,10 @@ LOGGER = Logger(__name__).logger
 
 class BaseTest:
 
-    def init_session(self, browser='chrome', url=None, credentials=None):
-        self.session = SeleniumSession(logger=LOGGER, browser=browser, url=url, credentials=credentials)
+    def init_session(self, browser='chrome', url=None, credentials=None, config_section="BOOKING CONFIG"):
+
+        self.session = SeleniumSession(config_section=config_section, logger=LOGGER,
+                                       browser=browser, url=url, credentials=credentials)
 
     def cleanup_session(self):
         if self.session:

@@ -1,9 +1,8 @@
 """Module that defines Element"""
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
-from base.configurations.exception import ElementNotFoundExcepiton, SiteIsDeadException, CustomException
+from base.configurations.exception import ElementNotFoundExcepiton, CustomException
 
 IMPLICITLY_TIMEOUT = 60
 

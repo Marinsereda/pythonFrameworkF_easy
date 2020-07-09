@@ -1,5 +1,4 @@
 import time
-
 from base.configurations.base_page import BasePage
 from base.configurations.element import Element
 from base.configurations.exception import LoginPageNotLoadedException, \
@@ -8,14 +7,17 @@ from base.configurations.exception import LoginPageNotLoadedException, \
 
 class LoginPage(BasePage):
     """Describes Base Page Element. And common methods for all page objects"""
-    def __init__(self, session):
+    def __init__(self, session, make_login=False):
         self.email_for_login = session.credentials[0]
         self.password_for_login = session.credentials[1]
-        super().__init__(session, make_login=False)
+        super().__init__(session)
+        if make_login:
+            self.login_to_booking()
 
     # page actions________________________________________________________
 
     def navigate_to_login_page(self, login_page_init_time=60):
+        self.logger.info('navigating to login page by address: {}'.format(self.session.url))
         self.driver.get(self.session.url)
         if not self.action.is_elements_present(self.main_form_container, timeout=login_page_init_time):
             raise LoginPageNotLoadedException('Login page was not loaded. Waited for {} seconds '.format(login_page_init_time))
@@ -52,13 +54,6 @@ class LoginPage(BasePage):
             self.action.click(self.close_welcome_modal_button)
             self.waits.wait_for_web_element_not_visible(self.close_welcome_modal_button)
 
-    def navigate_to_home_page_from_content(self):
-        if not self.action.is_element_displayed(self.events_search_form):
-            self.action.click(self.booking_home_logo)
-            if not self.action.is_element_displayed(self.events_search_form, timeout=20):
-                raise HomePageNotLoadedException('Failed to navigate to home page from content.')
-        self.logger.info("Home page successfully loaded.")
-
     def login_to_booking(self):
         self.navigate_to_login_page()
         self.click_enter_in_account()
@@ -88,10 +83,6 @@ class LoginPage(BasePage):
     def my_profile_button(self): return Element(self.session, ("CSS_SELECTOR", '[id="profile-menu-trigger--content"]'))
     @property
     def close_welcome_modal_button(self): return Element(self.session, ("CSS_SELECTOR", ".modal-mask-closeBtn"))
-    @property
-    def booking_home_logo(self): return Element(self.session, ("CSS_SELECTOR", "#top #logo_no_globe_new_logo"))
-    @property
-    def events_search_form(self): return Element(self.session, ("CSS_SELECTOR", ".js-ds-layout-events-search-form"))
 
 
 
