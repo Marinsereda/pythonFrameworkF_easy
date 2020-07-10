@@ -160,6 +160,7 @@ class Interactions:
         """
         web_element, description = Element(self.session).initialize_webelement(element, el_description)
         self.logger.info("Clicking on following element '{}'".format(description))
+        self.waits.wait_for_element_to_be_enabled(element, el_description)
 
         try:
             self.logger.info("Clicking on following element '{}'".format(description))
@@ -312,16 +313,16 @@ class Interactions:
 
     # CHECKBOX
 
-    def is_checked(self, element, el_description=''):
-        """return element is_checked status
-        """
-        web_element, description = Element(self.session).initialize_webelement(element, el_description)
-        try:
-            self.logger.info("Getting is selected status of following checkbox '{}'".format(description))
-            return element.is_selected()
-        except Exception as e:
-            raise ElementNotAvailableException('Failed to get is_selected status for element: "{}"'
-                                               'Got following error: "{}"'.format(description, str(e)))
+    # def is_checked(self, element, el_description=''):
+    #     """return element is_checked status
+    #     """
+    #     web_element, description = Element(self.session).initialize_webelement(element, el_description)
+    #     try:
+    #         self.logger.info("Getting is selected status of following checkbox '{}'".format(description))
+    #         return element.is_selected()
+    #     except Exception as e:
+    #         raise ElementNotAvailableException('Failed to get is_selected status for element: "{}"'
+    #                                            'Got following error: "{}"'.format(description, str(e)))
 
     def set_checkbox(self, element, el_description='', select=True):
         """set checkbox method
@@ -331,7 +332,7 @@ class Interactions:
         """
         web_element, description = Element(self.session).initialize_webelement(element, el_description)
 
-        if (select and not self.is_checked(element)) or (not select and self.is_checked(element)):
+        if (select and not self.is_element_selected(element)) or (not select and self.is_element_selected(element)):
             self.logger.info("{} following checkbox: {}".format('selecting' if select else 'deselecting', description))
             self.click(element, el_description)
 
