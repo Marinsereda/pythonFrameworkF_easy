@@ -83,8 +83,8 @@ class Waits:
             bool: False if the WebElement not became invisible, or disappear from DOM, after specified time out.
         """
         try:
-            web_element, el_description = Element(self.session).initialize_webelement(element, el_description, timeout=timeout)
-            self.logger.info("Waiting for webelement {} to be no longer visible".format(el_description))
+            self.logger.info("Waiting for webelement {} to be no longer visible or present".format(el_description))
+            web_element, el_description = Element(self.session).initialize_webelement(element, el_description, timeout=1)
             return WebDriverWait(self.driver, timeout, poll_frequency).until(ec.invisibility_of_element_located(web_element))
         except TimeoutException:
             if raise_exception:
