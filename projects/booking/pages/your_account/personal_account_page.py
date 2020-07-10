@@ -1,7 +1,7 @@
 from base.configurations.element import Element
 from base.configurations.exception import LoginPageNotLoadedException
-from pages.login_page import LoginPage
-from components.calendar import Calendar
+from projects.booking.pages.login_page import LoginPage
+from projects.booking.components.calendar import Calendar
 
 
 class PersonalAccountPage(LoginPage):

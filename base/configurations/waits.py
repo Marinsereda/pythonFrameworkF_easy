@@ -1,14 +1,9 @@
 """
 Describes all wait methods.
 """
-import sys
-import time
-
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.common.by import By
 from base.configurations.exception import *
 from base.configurations.element import Element
 
@@ -59,7 +54,7 @@ class Waits:
             web_element, el_description = Element(self.session).initialize_webelement(element, el_description, timeout=timeout)
             self.logger.info("Waiting for following element to be displayed : '%s'" % el_description)
             return WebDriverWait(self.driver, timeout, poll_frequency).until(ec.visibility_of(web_element))
-        except ElementNotFoundExcepiton as element_not_found_e:
+        except (ElementNotFoundExcepiton, NoSuchElementException) as element_not_found_e:
             if raise_exception:
                 raise element_not_found_e
             else:

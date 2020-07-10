@@ -52,15 +52,6 @@ class Calendar(BasePage):
     @property
     def calendar_active_date(self):return Element(self.session, ("CSS_SELECTOR", 'td.bui-calendar__date[data-date]'))
 
-    # @property
-    # def password_input(self): return Element(self.session, ("CSS_SELECTOR", 'input#password'))
-    # @property
-    # def submit_login_button(self): return Element(self.session, ("CSS_SELECTOR", 'button[type="submit"]'))
-    # @property
-    # def my_profile_button(self): return Element(self.session, ("CSS_SELECTOR", '[id="profile-menu-trigger--content"]'))
-    # @property
-    # def close_welcome_modal_button(self): return Element(self.session, ("CSS_SELECTOR", ".modal-mask-closeBtn"))
-
 
 
 
