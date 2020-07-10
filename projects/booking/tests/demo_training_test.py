@@ -19,3 +19,4 @@ class TestDemo(BaseTest):
         page.calendar.select_date('2020', '07', '02')
         self.cleanup_session()
 
+# marina changes
