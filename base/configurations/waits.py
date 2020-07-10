@@ -114,7 +114,7 @@ class Waits:
         self.logger.info("Waiting for following element to be enabled : '%s'", el_description)
         try:
             return WebDriverWait(self.driver, timeout, poll_frequency).until(
-                lambda element_enabled: web_element.is_enabled())
+                lambda: web_element.is_enabled())
         except TimeoutException:
             if raise_exception:
                 raise ElementIsDisabledException("Element '%s' is disabled. Waited for '%s' seconds."
@@ -143,7 +143,7 @@ class Waits:
                          .format(text, attribute, el_description))
         try:
             return WebDriverWait(self.driver, timeout, poll_frequency).until(
-                lambda element_attribute: text in web_element.get_attribute(attribute))
+                lambda : text in web_element.get_attribute(attribute))
         except TimeoutException:
             if raise_exception:
                 raise FlowFailedException(
@@ -176,7 +176,7 @@ class Waits:
                          .format(text, attribute, el_description))
         try:
             return WebDriverWait(self.driver, timeout, poll_frequency).until(
-                lambda element_attribute: text not in web_element.get_attribute(attribute))
+                lambda : text not in web_element.get_attribute(attribute))
         except TimeoutException:
             if raise_exception:
                 raise FlowFailedException(
@@ -205,7 +205,7 @@ class Waits:
             text, el_description))
         try:
             return WebDriverWait(self.driver, timeout).until(
-                lambda element_text: text in web_element.text)
+                lambda : text in web_element.text)
         except TimeoutException:
             if raise_exception:
                 raise FlowFailedException(
@@ -237,7 +237,7 @@ class Waits:
             text, el_description))
         try:
             return WebDriverWait(self.driver, timeout).until(
-                lambda element_text: text not in web_element.text)
+                lambda: text not in web_element.text)
         except TimeoutException:
             if raise_exception:
                 raise FlowFailedException(
